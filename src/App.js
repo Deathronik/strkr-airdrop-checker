@@ -10,6 +10,31 @@ function App() {
     const [total, setTotal] = useState(0)
     const [isLoading, setIsLoading] = useState(false)
 
+    const fetchWalletData = async (wallet) => {
+        const response = await fetch(`https://starkrocket.xyz/api/check_wallet?address=${wallet}`, {
+            "headers": {
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+                "accept-language": "en-US,en;q=0.9,ru-UA;q=0.8,ru;q=0.7,uk;q=0.6",
+                "cache-control": "max-age=0",
+                "sec-ch-ua": "\"Not_A Brand\";v=\"8\", \"Chromium\";v=\"120\", \"Google Chrome\";v=\"120\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": "\"Windows\"",
+                "sec-fetch-dest": "document",
+                "sec-fetch-mode": "navigate",
+                "sec-fetch-site": "none",
+                "sec-fetch-user": "?1",
+                "upgrade-insecure-requests": "1"
+            },
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "omit"
+        });
+
+        return await response.json()
+    }
+
     const onCLickCheckHandler = async () => {
         setIsLoading(true)
         const walletsStats = []
@@ -18,34 +43,22 @@ function App() {
         for (const wallet of wallets) {
             if (wallet === "") continue
 
-            const response = await fetch(`https://starkrocket.xyz/api/check_wallet?address=${wallet}`, {
-                "headers": {
-                    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-                    "accept-language": "en-US,en;q=0.9,ru-UA;q=0.8,ru;q=0.7,uk;q=0.6",
-                    "cache-control": "max-age=0",
-                    "sec-ch-ua": "\"Not_A Brand\";v=\"8\", \"Chromium\";v=\"120\", \"Google Chrome\";v=\"120\"",
-                    "sec-ch-ua-mobile": "?0",
-                    "sec-ch-ua-platform": "\"Windows\"",
-                    "sec-fetch-dest": "document",
-                    "sec-fetch-mode": "navigate",
-                    "sec-fetch-site": "none",
-                    "sec-fetch-user": "?1",
-                    "upgrade-insecure-requests": "1"
-                },
-                "referrerPolicy": "strict-origin-when-cross-origin",
-                "body": null,
-                "method": "GET",
-                "mode": "cors",
-                "credentials": "omit"
-            });
+            let responseJSON = await fetchWalletData(wallet)
+            let points = responseJSON.result.points
+            let count = 0
 
-            const responseJSON = await response.json()
+            while (points === 0) {
+                if (count === 10) break
 
-            total += responseJSON.result.points
+                responseJSON = await fetchWalletData(wallet)
+                points = responseJSON.result.points
+                count++
+            }
 
+            total += points
             walletsStats.push({
                 wallet: responseJSON.result.address,
-                amount: responseJSON.result.points,
+                amount: points,
                 eligible: responseJSON.result.eligible
             })
         }
