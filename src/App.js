@@ -58,6 +58,8 @@ function App() {
     return (
         <div className="App p-5 d-flex justify-content-center align-items-center text-center flex-column">
             <h3>$STRKR Airdrop Checker</h3>
+            <p className="w-25">Stark Rocket api has problems with the correct display of results, so some wallets may be not eligible when eligible, to be sure of the result you can check them again</p>
+            <p className="w-25">У API Stark Rocket есть проблемы с корректным отображением результатов, поэтому некоторые кошельки могут быть не элигбл, хотя на самом деле элигбл, чтобы быть уверенным в результате, вы можете проверить их еще раз по отдельности</p>
             <div>
                 <Form className="mb-3">
                     <Form.Label className="text-white"><h5>Wallets</h5></Form.Label>
