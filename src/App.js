@@ -1,5 +1,5 @@
 import './App.css';
-import {Form, Table, Button, Spinner} from "react-bootstrap";
+import {Form, Table, Button, Spinner, ProgressBar} from "react-bootstrap";
 import React, {useState} from "react";
 import Result from "./Components/Result/Result";
 import Creator from "./Components/Creator/Creator";
@@ -7,6 +7,7 @@ import Creator from "./Components/Creator/Creator";
 function App() {
     const [wallets, setWallets] = useState([])
     const [results, setResults] = useState([])
+    const [progress, setProgress] = useState(0)
     const [total, setTotal] = useState(0)
     const [isLoading, setIsLoading] = useState(false)
 
@@ -36,11 +37,14 @@ function App() {
     }
 
     const onCLickCheckHandler = async () => {
+        setProgress(0)
         setIsLoading(true)
         const walletsStats = []
         let total = 0
 
         for (const wallet of wallets) {
+            await setProgress(prevState => prevState + 1)
+
             if (wallet === "") continue
 
             let responseJSON = await fetchWalletData(wallet)
@@ -80,6 +84,7 @@ function App() {
                                   style={{width: 650, height: 300, resize: "none"}} as="textarea"/>
                 </Form>
                 <Button className="w-25" onClick={onCLickCheckHandler}>{isLoading ? <Spinner animation="grow" size="sm"/> : "Check"}</Button>
+                {isLoading && <ProgressBar className="mt-3" animated now={progress} max={wallets.length}/>}
             </div>
             <div className="mt-3">
                 <Creator/>
