@@ -48,23 +48,33 @@ function App() {
             if (wallet === "") continue
 
             let responseJSON = await fetchWalletData(wallet)
-            let points = responseJSON.result.points
-            let count = 0
+            let points
 
-            while (points === 0) {
-                if (count === 10) break
-
-                responseJSON = await fetchWalletData(wallet)
+            if (responseJSON.result) {
                 points = responseJSON.result.points
-                count++
-            }
+                let count = 0
 
-            total += points
-            walletsStats.push({
-                wallet: responseJSON.result.address,
-                amount: points,
-                eligible: responseJSON.result.eligible
-            })
+                while (points === 0) {
+                    if (count === 10) break
+
+                    responseJSON = await fetchWalletData(wallet)
+                    points = responseJSON.result.points
+                    count++
+                }
+
+                total += points
+                walletsStats.push({
+                    wallet: responseJSON.result.address,
+                    amount: points,
+                    eligible: responseJSON.result.eligible
+                })
+            } else {
+                walletsStats.push({
+                    wallet: wallet,
+                    amount: 0,
+                    eligible: false
+                })
+            }
         }
 
         setTotal(total)
@@ -75,15 +85,19 @@ function App() {
     return (
         <div className="App p-5 d-flex justify-content-center align-items-center text-center flex-column">
             <h3>$STRKR Airdrop Checker</h3>
-            <p className="w-25">Stark Rocket api has problems with the correct display of results, so some wallets may be not eligible when eligible, to be sure of the result you can check them again</p>
-            <p className="w-25">У API Stark Rocket есть проблемы с корректным отображением результатов, поэтому некоторые кошельки могут быть не элигбл, хотя на самом деле элигбл, чтобы быть уверенным в результате, вы можете проверить их еще раз по отдельности</p>
+            <p className="w-25">Stark Rocket api has problems with the correct display of results, so some wallets may
+                be not eligible when eligible, to be sure of the result you can check them again</p>
+            <p className="w-25">У API Stark Rocket есть проблемы с корректным отображением результатов, поэтому
+                некоторые кошельки могут быть не элигбл, хотя на самом деле элигбл, чтобы быть уверенным в результате,
+                вы можете проверить их еще раз по отдельности</p>
             <div>
                 <Form className="mb-3">
                     <Form.Label className="text-white"><h5>Wallets</h5></Form.Label>
                     <Form.Control onChange={e => setWallets(e.target.value.toLowerCase().split("\n"))}
                                   style={{width: 650, height: 300, resize: "none"}} as="textarea"/>
                 </Form>
-                <Button className="w-25" disabled={isLoading} onClick={onCLickCheckHandler}>{isLoading ? <Spinner animation="grow" size="sm"/> : "Check"}</Button>
+                <Button className="w-25" disabled={isLoading} onClick={onCLickCheckHandler}>{isLoading ?
+                    <Spinner animation="grow" size="sm"/> : "Check"}</Button>
                 {isLoading && <ProgressBar className="mt-3" animated now={progress} max={wallets.length}/>}
             </div>
             <div className="mt-3">
