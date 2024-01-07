@@ -96,8 +96,7 @@ function App() {
                     <Form.Control onChange={e => setWallets(e.target.value.toLowerCase().split("\n"))}
                                   style={{width: 650, height: 300, resize: "none"}} as="textarea"/>
                 </Form>
-                <Button className="w-25" disabled={isLoading} onClick={onCLickCheckHandler}>{isLoading ?
-                    <Spinner animation="grow" size="sm"/> : "Check"}</Button>
+                <Button className="w-25" disabled={true}>Airdrop Finished</Button>
                 {isLoading && <ProgressBar className="mt-3" animated now={progress} max={wallets.length}/>}
             </div>
             <div className="mt-3">
