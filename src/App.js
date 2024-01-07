@@ -1,5 +1,5 @@
 import './App.css';
-import {Form, Table, Button, Spinner, ProgressBar} from "react-bootstrap";
+import {Form, Table, Button, ProgressBar} from "react-bootstrap";
 import React, {useState} from "react";
 import Result from "./Components/Result/Result";
 import Creator from "./Components/Creator/Creator";
@@ -96,7 +96,7 @@ function App() {
                     <Form.Control onChange={e => setWallets(e.target.value.toLowerCase().split("\n"))}
                                   style={{width: 650, height: 300, resize: "none"}} as="textarea"/>
                 </Form>
-                <Button className="w-25" disabled={true}>Airdrop Finished</Button>
+                <Button className="w-25" disabled={true} onClick={onCLickCheckHandler}>Airdrop Finished</Button>
                 {isLoading && <ProgressBar className="mt-3" animated now={progress} max={wallets.length}/>}
             </div>
             <div className="mt-3">
